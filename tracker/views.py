@@ -103,3 +103,7 @@ def delete_transaction(request, pk):
         txn.delete()
         return redirect('dashboard')
     return render(request, 'tracker/delete_confirm.html', {'txn': txn})
+
+
+def home_redirect(request):
+    return redirect('login')
