@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="{% static 'tracker/style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container">
+        {% if user.is_authenticated %}
+            <p>
+                Welcome, {{ user.username }} |
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none;border:none;color:#007BFF;text-decoration:underline;cursor:pointer;">
+                        Logout
+                    </button>
+                </form>
+            </p>
+        {% else %}
+            <p><a href="{% url 'login' %}">Login</a></p>
+            <p><a href="{% url 'register' %}">Register</a> </p>
+        {% endif %}
+        <hr>
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

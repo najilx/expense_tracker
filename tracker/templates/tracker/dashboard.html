@@ -1,0 +1,88 @@
+{% extends "tracker/base.html" %}
+
+{% block content %}
+  <h2>Welcome, {{ user.username }}!</h2>
+
+  <a href="{% url 'add_transaction' %}">
+    <button>Add New Transaction</button>
+  </a>
+
+  <form method="get" style="margin-bottom: 20px;">
+    <label>Start Date:
+      <input type="date" name="start_date" value="{{ request.GET.start_date }}">
+    </label>
+    <label>End Date:
+      <input type="date" name="end_date" value="{{ request.GET.end_date }}">
+    </label>
+    <button type="submit">Filter</button>
+  </form>
+
+  <p><strong>Total Income:</strong> ₹{{ income }}</p>
+  <p><strong>Total Expenses:</strong> ₹{{ expenses }}</p>
+  <p><strong>Net Savings:</strong> ₹{{ savings }}</p>
+
+  <h3>Your Transactions</h3>
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>Date</th>
+      <th>Amount</th>
+      <th>Category</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+    {% for txn in transactions %}
+    <tr>
+      <td>{{ txn.date }}</td>
+      <td>₹{{ txn.amount }}</td>
+      <td>{{ txn.category }}</td>
+      <td>{{ txn.description }}</td>
+      <td>
+        <a href="{% url 'update_transaction' txn.id %}">Edit</a> |
+        <a href="{% url 'delete_transaction' txn.id %}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No transactions yet.</td></tr>
+    {% endfor %}
+  </table>
+
+  <h3>Income vs Expenses Chart</h3>
+  <canvas id="transactionChart" width="400" height="200"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('transactionChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: {{ labels|safe }},
+        datasets: [
+          {
+            label: 'Income',
+            data: {{ income_data }},
+            borderColor: 'green',
+            fill: false,
+          },
+          {
+            label: 'Expenses',
+            data: {{ expenses_data }},
+            borderColor: 'red',
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            title: { display: true, text: 'Date' }
+          },
+          y: {
+            title: { display: true, text: 'Amount (₹)' }
+          }
+        }
+      }
+    });
+  </script>
+
+{% endblock %}

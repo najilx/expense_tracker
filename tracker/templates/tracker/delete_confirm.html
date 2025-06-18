@@ -1,0 +1,16 @@
+{% extends "tracker/base.html" %}
+{% block content %}
+  <h2>Delete Transaction</h2>
+  <p>Are you sure you want to delete this transaction?</p>
+  <ul>
+    <li><strong>Date:</strong> {{ txn.date }}</li>
+    <li><strong>Amount:</strong> ₹{{ txn.amount }}</li>
+    <li><strong>Category:</strong> {{ txn.category }}</li>
+    <li><strong>Description:</strong> {{ txn.description }}</li>
+  </ul>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, Delete</button>
+    <a href="{% url 'dashboard' %}">Cancel</a>
+  </form>
+{% endblock %}
